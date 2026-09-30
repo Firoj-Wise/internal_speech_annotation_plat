@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css?v=6.0">
+  <link rel="stylesheet" href="/static/css/style.css?v=7.0">
 </head>
 <body>
   <!-- Main Container -->
@@ -40,6 +40,16 @@
       </div>
 
       <div class="header-right">
+        <!-- Analytics Toggle Button -->
+        <button class="pill-btn analytics-toggle-btn" id="toggleAnalyticsBtn" title="Session Analytics">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Analytics</span>
+        </button>
+
         <!-- Annotator Profile -->
         <button class="pill-btn profile-btn" id="openOnboardingBtn" title="Annotator Profile">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -104,6 +114,13 @@
                   <span>Next</span>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+                <button class="jump-unannotated-inline-btn" id="jumpNextUnannotatedBtn" title="Jump to next pending item">
+                  <span>Next Pending</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="13 17 18 12 13 7"></polyline>
+                    <polyline points="6 17 11 12 6 7"></polyline>
                   </svg>
                 </button>
               </div>
@@ -248,20 +265,30 @@
           </div>
         </div>
       </section>
+    </main>
+  </div>
 
-      <!-- Right Panel: Statistics & Session Overview -->
-      <aside class="stats-panel">
-        <div class="panel-header">
-          <div class="panel-title-cluster">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="panel-header-icon">
-              <line x1="18" y1="20" x2="18" y2="10"></line>
-              <line x1="12" y1="20" x2="12" y2="4"></line>
-              <line x1="6" y1="20" x2="6" y2="14"></line>
-            </svg>
-            <h3 class="panel-title">Session Analytics</h3>
-          </div>
+  <!-- Slide-Over Analytics Drawer -->
+  <div class="drawer-overlay hidden" id="analyticsDrawerOverlay">
+    <aside class="analytics-drawer" id="analyticsDrawer">
+      <div class="drawer-header">
+        <div class="panel-title-cluster">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="panel-header-icon">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <h3 class="panel-title">Session Analytics</h3>
         </div>
+        <button class="drawer-close-btn" id="closeAnalyticsDrawerBtn" title="Close" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
 
+      <div class="drawer-body">
         <div class="stats-card">
           <div class="stat-row">
             <span class="stat-name">Total Vocabulary Words</span>
@@ -330,17 +357,8 @@
             <span class="config-val">JSON + SQLite</span>
           </div>
         </div>
-
-        <!-- Jump to Next Unannotated Button -->
-        <button class="jump-unannotated-btn" id="jumpNextUnannotatedBtn">
-          <span>Jump to Next Unannotated</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="13 17 18 12 13 7"></polyline>
-            <polyline points="6 17 11 12 6 7"></polyline>
-          </svg>
-        </button>
-      </aside>
-    </main>
+      </div>
+    </aside>
   </div>
 
   <!-- Authentication & Access Gate Modal -->
@@ -536,6 +554,6 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Client Application Script -->
-  <script src="/static/js/app.js?v=6.0"></script>
+  <script src="/static/js/app.js?v=7.0"></script>
 </body>
 </html>

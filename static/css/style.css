@@ -279,8 +279,8 @@ body {
 /* Workspace Grid */
 .workspace-grid {
   display: grid;
-  grid-template-columns: 310px minmax(0, 1fr) 290px;
-  gap: 20px;
+  grid-template-columns: 310px minmax(0, 1fr);
+  gap: 24px;
   padding: 20px 28px;
   flex: 1;
   min-height: 0; /* Critical for inner scrolling */
@@ -1139,27 +1139,114 @@ kbd {
   border: 1px solid #a7f3d0;
 }
 
-.jump-unannotated-btn {
-  margin-top: auto;
+/* Analytics Toggle Button in Header */
+.analytics-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-prominent);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.analytics-toggle-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+/* Inline Jump Unannotated Button in Stage Top Navigation */
+.jump-unannotated-inline-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-primary);
+  color: #ffffff;
+  border: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  margin-left: 8px;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+.jump-unannotated-inline-btn:hover {
+  background: var(--accent-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.28);
+}
+
+/* Slide-Over Analytics Drawer */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 99;
+  display: flex;
+  justify-content: flex-end;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+.drawer-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.analytics-drawer {
+  width: 350px;
+  max-width: 90vw;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.drawer-overlay.hidden .analytics-drawer {
+  transform: translateX(100%);
+}
+.drawer-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.drawer-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: var(--radius-full);
-  background: var(--accent-primary);
-  border: none;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
   cursor: pointer;
-  transition: var(--transition-fluid);
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+  padding: 0;
+  transition: all 0.2s ease;
 }
-.jump-unannotated-btn:hover {
-  background: var(--accent-primary-hover);
-  transform: translateY(-1px);
+.drawer-close-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  transform: rotate(90deg);
 }
+.drawer-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
 
 /* Onboarding / Access Gate Modal */
 .modal-overlay {

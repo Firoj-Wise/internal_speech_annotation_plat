@@ -82,6 +82,11 @@
     cfgAudioCache: document.getElementById('cfgAudioCache'),
     jumpNextUnannotatedBtn: document.getElementById('jumpNextUnannotatedBtn'),
 
+    // Analytics Drawer
+    toggleAnalyticsBtn: document.getElementById('toggleAnalyticsBtn'),
+    analyticsDrawerOverlay: document.getElementById('analyticsDrawerOverlay'),
+    closeAnalyticsDrawerBtn: document.getElementById('closeAnalyticsDrawerBtn'),
+
     // Modal & Authentication
     onboardingModal: document.getElementById('onboardingModal'),
     closeOnboardingModalBtn: document.getElementById('closeOnboardingModalBtn'),
@@ -796,6 +801,18 @@
     el.onboardingModal.classList.add('hidden');
   }
 
+  function openAnalyticsDrawer() {
+    if (el.analyticsDrawerOverlay) {
+      el.analyticsDrawerOverlay.classList.remove('hidden');
+    }
+  }
+
+  function closeAnalyticsDrawer() {
+    if (el.analyticsDrawerOverlay) {
+      el.analyticsDrawerOverlay.classList.add('hidden');
+    }
+  }
+
   function selectAnnotator(annotator) {
     state.activeAnnotator = annotator;
     const str = JSON.stringify(annotator);
@@ -942,6 +959,21 @@
     });
 
     el.closeOnboardingModalBtn.addEventListener('click', hideOnboardingModal);
+
+    // Analytics Drawer Toggle & Close
+    if (el.toggleAnalyticsBtn) {
+      el.toggleAnalyticsBtn.addEventListener('click', openAnalyticsDrawer);
+    }
+    if (el.closeAnalyticsDrawerBtn) {
+      el.closeAnalyticsDrawerBtn.addEventListener('click', closeAnalyticsDrawer);
+    }
+    if (el.analyticsDrawerOverlay) {
+      el.analyticsDrawerOverlay.addEventListener('click', (e) => {
+        if (e.target === el.analyticsDrawerOverlay) {
+          closeAnalyticsDrawer();
+        }
+      });
+    }
 
     // Dismiss modal on background backdrop click if user is signed in
     el.onboardingModal.addEventListener('click', (e) => {
