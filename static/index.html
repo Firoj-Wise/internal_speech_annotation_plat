@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css?v=7.0">
+  <link rel="stylesheet" href="/static/css/style.css?v=9.0">
 </head>
 <body>
   <!-- Main Container -->
@@ -103,20 +103,26 @@
                 <span class="badge meaning-badge" id="meaningBadge">Meaning 1 of 1</span>
               </div>
               <div class="nav-actions">
-                <button class="nav-icon-btn" id="prevItemBtn" title="Previous Sentence (Left Arrow)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                  </svg>
-                  <span>Prev</span>
-                </button>
-                <span class="item-sequence-text" id="itemSequenceText">Item 1 / 1712</span>
-                <button class="nav-icon-btn" id="nextItemBtn" title="Next Sentence (Right Arrow)">
-                  <span>Next</span>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </button>
-                <button class="jump-unannotated-inline-btn" id="jumpNextUnannotatedBtn" title="Jump to next pending item">
+                <div class="pagination-stepper" role="navigation" aria-label="Sentence Navigation">
+                  <button class="stepper-nav-btn prev-btn" id="prevItemBtn" title="Previous Sentence (← Left Arrow)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    <span>Prev</span>
+                  </button>
+                  <div class="stepper-indicator">
+                    <span class="stepper-label">Sentence</span>
+                    <span class="stepper-index" id="itemSequenceText">1 / 1,712</span>
+                  </div>
+                  <button class="stepper-nav-btn next-btn" id="nextItemBtn" title="Next Sentence (→ Right Arrow)">
+                    <span>Next</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                </div>
+
+                <button class="jump-pending-btn" id="jumpNextUnannotatedBtn" title="Jump directly to next unannotated sentence">
                   <span>Next Pending</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="13 17 18 12 13 7"></polyline>
@@ -246,10 +252,60 @@
                 </button>
               </div>
 
-              <!-- Notes Input -->
-              <div class="notes-input-row">
-                <input type="text" id="annotationNotesInput" placeholder="Optional evaluation notes (e.g. vowel distortion, wrong syllable stress)..." autocomplete="off">
-                <button class="pill-btn save-notes-btn" id="saveNotesBtn">Save Notes</button>
+              <!-- Feedback & Notes Deck -->
+              <div class="feedback-deck-card">
+                <div class="feedback-deck-header">
+                  <div class="feedback-deck-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>Evaluation Notes & Defect Tags</span>
+                    <span class="feedback-optional-pill">Optional</span>
+                  </div>
+                  <span class="feedback-auto-status" id="feedbackSaveStatus">Auto-saves with rating</span>
+                </div>
+
+                <!-- Quick Flaw/Quality Chips -->
+                <div class="feedback-chips-row" id="feedbackChipsRow">
+                  <button type="button" class="feedback-chip" data-tag="उच्चारण त्रुटि (Pronunciation issue)">
+                    <span class="chip-indicator dot-red"></span>
+                    <span>उच्चारण (Pronunciation)</span>
+                  </button>
+                  <button type="button" class="feedback-chip" data-tag="अस्वाभाविक गति/तनाव (Stress & tempo)">
+                    <span class="chip-indicator dot-amber"></span>
+                    <span>तनाव/गति (Stress)</span>
+                  </button>
+                  <button type="button" class="feedback-chip" data-tag="रोबोटिक विकृति (Robotic distortion)">
+                    <span class="chip-indicator dot-purple"></span>
+                    <span>विकृति (Distortion)</span>
+                  </button>
+                  <button type="button" class="feedback-chip" data-tag="अस्पष्ट / काटियो (Muffled/Cutoff)">
+                    <span class="chip-indicator dot-orange"></span>
+                    <span>अस्पष्ट (Muffled)</span>
+                  </button>
+                  <button type="button" class="feedback-chip" data-tag="पृष्ठभूमि आवाज (Background noise)">
+                    <span class="chip-indicator dot-blue"></span>
+                    <span>आवाज (Noise)</span>
+                  </button>
+                  <button type="button" class="feedback-chip" data-tag="उत्कृष्ट प्राकृतिक (Natural & fluent)">
+                    <span class="chip-indicator dot-green"></span>
+                    <span>उत्कृष्ट (Natural)</span>
+                  </button>
+                </div>
+
+                <!-- Textarea and Save row -->
+                <div class="feedback-input-wrapper">
+                  <textarea id="annotationNotesInput" class="feedback-textarea" rows="2" placeholder="Click quick tags above or type notes (e.g. vowel distortion, wrong syllable stress)..."></textarea>
+                  <div class="feedback-toolbar">
+                    <span class="feedback-char-count" id="feedbackCharCount">0 characters</span>
+                    <button class="pill-btn save-notes-btn" id="saveNotesBtn" type="button" title="Save notes to current sentence">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Save Note</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -375,8 +431,9 @@
               <span class="brand-tagline modal-brand-tagline">Speech Annotation Platform</span>
             </div>
           </div>
-          <h3 class="modal-title" id="authModalTitle">Sign In</h3>
-          <p class="modal-subtitle" id="authModalSubtitle">Sign in or register to access the evaluation platform.</p>
+          <!-- Hidden title/subtitle elements preserved for JS safety -->
+          <span class="hidden" id="authModalTitle" style="display:none;">Sign In</span>
+          <span class="hidden" id="authModalSubtitle" style="display:none;">Sign in or register to access the evaluation platform.</span>
         </div>
         <button class="modal-close-btn hidden" id="closeOnboardingModalBtn" title="Close" type="button">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -554,6 +611,6 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Client Application Script -->
-  <script src="/static/js/app.js?v=7.0"></script>
+  <script src="/static/js/app.js?v=9.0"></script>
 </body>
 </html>

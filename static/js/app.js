@@ -61,11 +61,14 @@
     replayAudioBtn: document.getElementById('replayAudioBtn'),
     speedBtns: document.querySelectorAll('.speed-btn'),
 
-    // Scoring
+    // Scoring & Feedback
     thumbsUpBtn: document.getElementById('thumbsUpBtn'),
     thumbsDownBtn: document.getElementById('thumbsDownBtn'),
     annotationNotesInput: document.getElementById('annotationNotesInput'),
     saveNotesBtn: document.getElementById('saveNotesBtn'),
+    feedbackSaveStatus: document.getElementById('feedbackSaveStatus'),
+    feedbackCharCount: document.getElementById('feedbackCharCount'),
+    feedbackChipsRow: document.getElementById('feedbackChipsRow'),
 
     // Stats
     statTotalWords: document.getElementById('statTotalWords'),
@@ -411,7 +414,7 @@
 
     el.prevItemBtn.disabled = !item.prev_item_id;
     el.nextItemBtn.disabled = !item.next_item_id;
-    el.itemSequenceText.textContent = `Sentence #${item.global_index + 1} / 1712`;
+    el.itemSequenceText.textContent = `${item.global_index + 1} / 1,712`;
 
     el.targetWordHeading.textContent = item.word;
     renderDefinition(item.definition);
@@ -433,6 +436,9 @@
     const annot = item.user_annotation;
     resetScoringButtons();
 
+    const notesVal = (annot && annot.notes) ? annot.notes : '';
+    el.annotationNotesInput.value = notesVal;
+
     if (annot && annot.score) {
       if (annot.score === 'thumbs_up') {
         el.thumbsUpBtn.classList.add('selected');
@@ -443,11 +449,11 @@
         el.currentScoreBadge.className = 'evaluation-status-tag evaluated-down';
         el.currentScoreLabel.textContent = 'Thumbs Down (Unacceptable)';
       }
-      el.annotationNotesInput.value = annot.notes || '';
+      updateFeedbackDeck(notesVal, true);
     } else {
       el.currentScoreBadge.className = 'evaluation-status-tag';
       el.currentScoreLabel.textContent = 'Not Evaluated';
-      el.annotationNotesInput.value = '';
+      updateFeedbackDeck(notesVal, false);
     }
   }
 
@@ -594,13 +600,83 @@
     }
   }
 
-  async function saveNotesOnly() {
-    if (!state.currentItem || !state.currentItem.user_annotation) {
-      showToast('Please select Thumbs Up or Thumbs Down first', 'error');
-      return;
+  // -------------------------------------------------------------------
+  // Feedback Deck & Notes Management
+  // -------------------------------------------------------------------
+  function updateFeedbackDeck(notesText = '', hasScore = false) {
+    if (el.feedbackCharCount) {
+      el.feedbackCharCount.textContent = `${notesText.length} characters`;
     }
-    const score = state.currentItem.user_annotation.score;
-    await submitScore(score);
+    if (el.feedbackSaveStatus) {
+      if (hasScore && notesText.trim()) {
+        el.feedbackSaveStatus.textContent = 'Saved with rating';
+        el.feedbackSaveStatus.className = 'feedback-auto-status saved';
+      } else if (hasScore) {
+        el.feedbackSaveStatus.textContent = 'Rating saved';
+        el.feedbackSaveStatus.className = 'feedback-auto-status saved';
+      } else {
+        el.feedbackSaveStatus.textContent = 'Auto-saves with rating';
+        el.feedbackSaveStatus.className = 'feedback-auto-status';
+      }
+    }
+    const chips = document.querySelectorAll('.feedback-chip');
+    chips.forEach(chip => {
+      const tag = chip.getAttribute('data-tag');
+      if (tag && notesText.includes(tag)) {
+        chip.classList.add('active');
+      } else {
+        chip.classList.remove('active');
+      }
+    });
+  }
+
+  function toggleFeedbackChip(chip) {
+    const tag = chip.getAttribute('data-tag');
+    if (!tag) return;
+
+    let currentVal = el.annotationNotesInput.value.trim();
+    if (currentVal.includes(tag)) {
+      currentVal = currentVal.replace(tag, '').replace(/,\s*,/g, ',').replace(/^,\s*|\s*,\s*$/g, '').trim();
+      chip.classList.remove('active');
+    } else {
+      if (currentVal.length > 0) {
+        currentVal += `, ${tag}`;
+      } else {
+        currentVal = tag;
+      }
+      chip.classList.add('active');
+    }
+    el.annotationNotesInput.value = currentVal;
+    const hasScore = !!(state.currentItem && state.currentItem.user_annotation && state.currentItem.user_annotation.score);
+    updateFeedbackDeck(currentVal, hasScore);
+
+    if (hasScore) {
+      submitScore(state.currentItem.user_annotation.score);
+    }
+  }
+
+  async function saveNotesOnly() {
+    if (!state.currentItem) return;
+
+    const hasScore = state.currentItem.user_annotation && state.currentItem.user_annotation.score;
+
+    if (hasScore) {
+      await submitScore(state.currentItem.user_annotation.score);
+      if (el.feedbackSaveStatus) {
+        el.feedbackSaveStatus.textContent = 'Notes saved';
+        el.feedbackSaveStatus.className = 'feedback-auto-status saved';
+      }
+      if (el.saveNotesBtn) {
+        el.saveNotesBtn.classList.add('saved');
+        setTimeout(() => el.saveNotesBtn.classList.remove('saved'), 1500);
+      }
+    } else {
+      if (el.feedbackSaveStatus) {
+        el.feedbackSaveStatus.textContent = 'Draft ready — choose rating';
+        el.feedbackSaveStatus.className = 'feedback-auto-status';
+      }
+      showToast('Note recorded! Select Thumbs Up (1) or Down (2) to complete evaluation.', 'info');
+    }
   }
 
   // -------------------------------------------------------------------
@@ -726,13 +802,13 @@
       el.tabRegisterBtn.classList.remove('active');
       el.loginForm.classList.remove('hidden');
       el.registerForm.classList.add('hidden');
-      el.authModalTitle.textContent = 'Sign In';
+      if (el.authModalTitle) el.authModalTitle.textContent = 'Sign In';
     } else {
       el.tabRegisterBtn.classList.add('active');
       el.tabLoginBtn.classList.remove('active');
       el.registerForm.classList.remove('hidden');
       el.loginForm.classList.add('hidden');
-      el.authModalTitle.textContent = 'Register New Annotator';
+      if (el.authModalTitle) el.authModalTitle.textContent = 'Register New Annotator';
     }
   }
 
@@ -743,7 +819,7 @@
     }
     el.onboardingModal.classList.remove('hidden');
     el.closeOnboardingModalBtn.classList.remove('hidden');
-    el.authModalTitle.textContent = 'Account Details';
+    if (el.authModalTitle) el.authModalTitle.textContent = 'Account Details';
     if (el.authModalSubtitle) {
       el.authModalSubtitle.textContent = 'Active Wiseyak Annotator Session';
     }
@@ -909,7 +985,7 @@
       el.authTabsRow.classList.add('hidden');
       el.registerForm.classList.add('hidden');
       el.loginForm.classList.add('hidden');
-      el.authModalTitle.textContent = 'Account Created';
+      if (el.authModalTitle) el.authModalTitle.textContent = 'Account Created';
 
       el.createdEmailVal.textContent = data.annotator.email;
       el.createdPasswordVal.textContent = data.assigned_password;
@@ -1008,10 +1084,19 @@
     // Audio Trigger
     el.playAudioBtn.addEventListener('click', toggleAudio);
 
-    // Scoring
+    // Scoring & Feedback
     el.thumbsUpBtn.addEventListener('click', () => submitScore('thumbs_up'));
     el.thumbsDownBtn.addEventListener('click', () => submitScore('thumbs_down'));
     el.saveNotesBtn.addEventListener('click', saveNotesOnly);
+
+    // Feedback chips & textarea
+    document.querySelectorAll('.feedback-chip').forEach(chip => {
+      chip.addEventListener('click', () => toggleFeedbackChip(chip));
+    });
+    el.annotationNotesInput.addEventListener('input', (e) => {
+      const hasScore = !!(state.currentItem && state.currentItem.user_annotation && state.currentItem.user_annotation.score);
+      updateFeedbackDeck(e.target.value, hasScore);
+    });
 
     // Navigation
     el.prevItemBtn.addEventListener('click', () => {
