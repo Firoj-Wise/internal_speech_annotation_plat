@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WiseYak - Speech Annotation Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css?v=6.0">
+</head>
+<body>
+  <!-- Main Container -->
+  <div class="app-layout">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="header-brand-lockup">
+          <img src="/static/assets/logo_emblem.png?v=6.0" alt="WiseYak" class="brand-emblem-img">
+          <div class="brand-text-stack">
+            <div class="brand-name">
+              <span class="brand-wise">WISE</span><span class="brand-yak">YAK</span>
+            </div>
+            <span class="brand-tagline">Speech Annotation Platform</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <!-- Progress Bar Summary -->
+        <div class="progress-pill">
+          <div class="progress-info">
+            <span class="progress-label">Evaluation Progress</span>
+            <span class="progress-counter" id="progressCounter">0 / 0 (0%)</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Annotator Profile -->
+        <button class="pill-btn profile-btn" id="openOnboardingBtn" title="Annotator Profile">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span id="activeAnnotatorName">Sign In / Register</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <main class="workspace-grid">
+      <!-- Left Sidebar: Word List & Filters -->
+      <aside class="sidebar-panel">
+        <div class="panel-header">
+          <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="wordSearchInput" placeholder="Search Nepali words..." autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-status="all">All</button>
+          <button class="filter-tab" data-status="pending">Pending</button>
+          <button class="filter-tab" data-status="annotated">Done</button>
+        </div>
+
+        <!-- Words List Container -->
+        <div class="words-scroll-list" id="wordsListContainer">
+          <div class="loading-state">Loading vocabulary...</div>
+        </div>
+      </aside>
+
+      <!-- Center Main Card: Evaluation Stage -->
+      <section class="evaluation-stage">
+        <!-- Double-Bezel Card Outer Shell -->
+        <div class="double-bezel-card">
+          <!-- Inner Core Container -->
+          <div class="bezel-inner">
+            
+            <!-- Stage Top Navigation -->
+            <div class="stage-nav-bar">
+              <div class="nav-breadcrumbs">
+                <span class="badge word-index-badge" id="wordIndexBadge">Word 0 of 0</span>
+                <span class="badge pos-badge" id="posBadge">Part of Speech</span>
+                <span class="badge meaning-badge" id="meaningBadge">Meaning 1 of 1</span>
+              </div>
+              <div class="nav-actions">
+                <button class="nav-icon-btn" id="prevItemBtn" title="Previous Sentence (Left Arrow)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                  <span>Prev</span>
+                </button>
+                <span class="item-sequence-text" id="itemSequenceText">Item 1 / 1712</span>
+                <button class="nav-icon-btn" id="nextItemBtn" title="Next Sentence (Right Arrow)">
+                  <span>Next</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Target Word Focal Section -->
+            <div class="word-focus-hero">
+              <div class="word-hero-left">
+                <span class="eyebrow-tag">Target Polysemous Word</span>
+                <h2 class="target-word-heading devanagari" id="targetWordHeading">--</h2>
+              </div>
+              <div class="word-hero-right">
+                <div class="evaluation-status-tag" id="currentScoreBadge">
+                  <span class="status-dot"></span>
+                  <span id="currentScoreLabel">Not Evaluated</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Word Context & Definition Box -->
+            <div class="context-definition-card">
+              <div class="context-header">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <span class="context-label">Target Semantic Definition / Sense</span>
+              </div>
+              <p class="definition-text devanagari" id="definitionText">--</p>
+            </div>
+
+            <!-- Nepali Sentence Demonstration Box -->
+            <div class="sentence-showcase-card">
+              <div class="sentence-header">
+                <span class="sentence-key-label" id="sentenceKeyLabel">Sentence Context 1</span>
+                <span class="audio-cache-status" id="audioCacheStatus">Checking audio...</span>
+              </div>
+              <p class="sentence-content devanagari" id="sentenceContent">
+                Select an item from the vocabulary list to begin.
+              </p>
+            </div>
+
+            <!-- Premium Audio Controller -->
+            <div class="audio-dock-container">
+              <div class="audio-controls-row">
+                <button class="play-trigger-btn" id="playAudioBtn" title="Play / Pause Audio (Spacebar)">
+                  <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                  <svg id="pauseIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16"></rect>
+                    <rect x="14" y="4" width="4" height="16"></rect>
+                  </svg>
+                </button>
+
+                <div class="audio-timeline-wrap">
+                  <div class="audio-scrub-bar" id="audioScrubBar">
+                    <div class="audio-scrub-fill" id="audioScrubFill" style="width: 0%;"></div>
+                  </div>
+                  <div class="audio-timestamp-row">
+                    <span id="audioCurrentTime">00:00</span>
+                    <span id="audioDuration">00:00</span>
+                  </div>
+                </div>
+
+                <div class="audio-speed-selector">
+                  <button class="speed-btn" data-speed="0.75">0.75x</button>
+                  <button class="speed-btn active" data-speed="1.0">1.0x</button>
+                  <button class="speed-btn" data-speed="1.25">1.25x</button>
+                </div>
+
+                <button class="replay-btn" id="replayAudioBtn" title="Replay from start">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic Evaluation Action Deck -->
+            <div class="scoring-action-deck">
+              <div class="scoring-deck-header">
+                <h3 class="scoring-title">Audio Evaluation Scoring</h3>
+                <span class="scoring-subtitle">Does the synthesized audio pronounce the target word naturally and accurately in this semantic context?</span>
+              </div>
+
+              <div class="scoring-buttons-grid">
+                <!-- Thumbs Up Button -->
+                <button class="score-card-btn score-thumbs-up" id="thumbsUpBtn">
+                  <div class="score-icon-wrap">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                    </svg>
+                  </div>
+                  <div class="score-meta">
+                    <span class="score-heading">Acceptable / Natural</span>
+                    <span class="score-hint">Accurate pronunciation and contextual prosody [Key: 1]</span>
+                  </div>
+                  <div class="check-indicator">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </button>
+
+                <!-- Thumbs Down Button -->
+                <button class="score-card-btn score-thumbs-down" id="thumbsDownBtn">
+                  <div class="score-icon-wrap">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path>
+                    </svg>
+                  </div>
+                  <div class="score-meta">
+                    <span class="score-heading">Unacceptable / Flawed</span>
+                    <span class="score-hint">Incorrect pronunciation, stress or unnatural sound [Key: 2]</span>
+                  </div>
+                  <div class="check-indicator">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Notes Input -->
+              <div class="notes-input-row">
+                <input type="text" id="annotationNotesInput" placeholder="Optional evaluation notes (e.g. vowel distortion, wrong syllable stress)..." autocomplete="off">
+                <button class="pill-btn save-notes-btn" id="saveNotesBtn">Save Notes</button>
+              </div>
+            </div>
+
+            <!-- Keyboard Navigation Legend -->
+            <div class="hotkeys-legend">
+              <span class="legend-item"><kbd>Space</kbd> Play/Pause</span>
+              <span class="legend-item"><kbd>1</kbd> Thumbs Up</span>
+              <span class="legend-item"><kbd>2</kbd> Thumbs Down</span>
+              <span class="legend-item"><kbd>&larr;</kbd> Prev Item</span>
+              <span class="legend-item"><kbd>&rarr;</kbd> Next Item</span>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Statistics & Session Overview -->
+      <aside class="stats-panel">
+        <div class="panel-header">
+          <div class="panel-title-cluster">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="panel-header-icon">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <h3 class="panel-title">Session Analytics</h3>
+          </div>
+        </div>
+
+        <div class="stats-card">
+          <div class="stat-row">
+            <span class="stat-name">Total Vocabulary Words</span>
+            <span class="stat-badge" id="statTotalWords">392</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Total Test Sentences</span>
+            <span class="stat-badge" id="statTotalSentences">1,712</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Evaluated Sentences</span>
+            <span class="stat-badge stat-badge-eval" id="statEvaluatedCount">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Pending Sentences</span>
+            <span class="stat-badge stat-badge-pending" id="statPendingCount">1,712</span>
+          </div>
+        </div>
+
+        <div class="scoring-breakdown-card">
+          <div class="card-subtitle-row">
+            <h4 class="card-subtitle">Scoring Distribution</h4>
+          </div>
+          <div class="distribution-bar-wrap">
+            <div class="dist-bar dist-thumbs-up" id="distThumbsUpBar" style="width: 50%;"></div>
+            <div class="dist-bar dist-thumbs-down" id="distThumbsDownBar" style="width: 50%;"></div>
+          </div>
+          <div class="dist-legend-row">
+            <div class="dist-legend-item">
+              <span class="dist-color-dot dot-up"></span>
+              <span class="dist-label">Thumbs Up:</span>
+              <span class="dist-num" id="statThumbsUpNum">0</span>
+            </div>
+            <div class="dist-legend-item">
+              <span class="dist-color-dot dot-down"></span>
+              <span class="dist-label">Thumbs Down:</span>
+              <span class="dist-num" id="statThumbsDownNum">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Parameters Card -->
+        <div class="config-summary-card">
+          <div class="card-subtitle-row">
+            <h4 class="card-subtitle">Synthesizer Pipeline</h4>
+            <span class="engine-status-pill">Active</span>
+          </div>
+          <div class="config-field">
+            <span class="config-key">Cached Audios</span>
+            <span class="config-val cache-pill" id="cfgAudioCache">Checking...</span>
+          </div>
+          <div class="config-field">
+            <span class="config-key">Model</span>
+            <span class="config-val" id="cfgModel">omnivoice_tts</span>
+          </div>
+          <div class="config-field">
+            <span class="config-key">Voice Profile</span>
+            <span class="config-val" id="cfgVoice">Pratikshya</span>
+          </div>
+          <div class="config-field">
+            <span class="config-key">Language</span>
+            <span class="config-val" id="cfgLanguage">Nepali (nep)</span>
+          </div>
+          <div class="config-field">
+            <span class="config-key">Storage Format</span>
+            <span class="config-val">JSON + SQLite</span>
+          </div>
+        </div>
+
+        <!-- Jump to Next Unannotated Button -->
+        <button class="jump-unannotated-btn" id="jumpNextUnannotatedBtn">
+          <span>Jump to Next Unannotated</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="13 17 18 12 13 7"></polyline>
+            <polyline points="6 17 11 12 6 7"></polyline>
+          </svg>
+        </button>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Authentication & Access Gate Modal -->
+  <div class="modal-overlay hidden" id="onboardingModal">
+    <div class="modal-window access-gate-window">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="header-brand-lockup modal-brand-lockup">
+            <img src="/static/assets/logo_emblem.png?v=6.0" alt="WiseYak" class="brand-emblem-img modal-emblem-img">
+            <div class="brand-text-stack">
+              <div class="brand-name modal-brand-name">
+                <span class="brand-wise">WISE</span><span class="brand-yak">YAK</span>
+              </div>
+              <span class="brand-tagline modal-brand-tagline">Speech Annotation Platform</span>
+            </div>
+          </div>
+          <h3 class="modal-title" id="authModalTitle">Sign In</h3>
+          <p class="modal-subtitle" id="authModalSubtitle">Sign in or register to access the evaluation platform.</p>
+        </div>
+        <button class="modal-close-btn hidden" id="closeOnboardingModalBtn" title="Close" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Auth Mode Switcher Tabs -->
+      <div class="auth-tabs-row" id="authTabsRow">
+        <button class="auth-tab active" id="tabLoginBtn" type="button">Sign In</button>
+        <button class="auth-tab" id="tabRegisterBtn" type="button">Register New Member</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 1. SIGN IN FORM -->
+        <form id="loginForm" class="auth-form-panel">
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">Wiseyak Company Email *</label>
+            <input type="email" id="loginEmail" class="form-input" placeholder="e.g. aarav.sharma@wiseyak.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Password *</label>
+            <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+            <span class="form-help-text">Default format for new members: username123</span>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="primary-action-btn">
+              <span>Sign In to Platform</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <!-- 2. REGISTER FORM -->
+        <form id="registerForm" class="auth-form-panel hidden">
+          <div class="form-group">
+            <label class="form-label" for="registerName">Full Name *</label>
+            <input type="text" id="registerName" class="form-input" placeholder="e.g. Aarav Sharma" required autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="registerEmail">Wiseyak Company Email *</label>
+            <input type="email" id="registerEmail" class="form-input" placeholder="e.g. aarav.sharma@wiseyak.com" required autocomplete="email">
+            <span class="form-help-text">Use your @wiseyak.com email address</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="registerPassword">Password (Optional)</label>
+            <input type="password" id="registerPassword" class="form-input" placeholder="Leave empty for default (username123)" autocomplete="new-password">
+            <span class="form-help-text">Leave blank to automatically assign: <strong>username123</strong></span>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="primary-action-btn">
+              <span>Register & Sign In</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <!-- 3. NEW ACCOUNT SUCCESS POPUP / BANNER -->
+        <div id="credentialAlertCard" class="credential-success-card hidden">
+          <div class="credential-header">
+            <div class="credential-check-mark">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div>
+              <h4 class="credential-title">Annotator Account Created!</h4>
+              <p class="credential-subtitle">Your personalized evaluation dataset is ready. Please record your credentials below.</p>
+            </div>
+          </div>
+
+          <div class="credential-box">
+            <div class="credential-field">
+              <span class="cred-label">Email:</span>
+              <span class="cred-val" id="createdEmailVal">aarav.sharma@wiseyak.com</span>
+            </div>
+            <div class="credential-field">
+              <span class="cred-label">Password:</span>
+              <span class="cred-val cred-pwd" id="createdPasswordVal">aarav123</span>
+            </div>
+          </div>
+
+          <button type="button" class="primary-action-btn" id="credentialContinueBtn">
+            <span>Continue to Evaluation Platform</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 4. ACTIVE PROFILE & SIGN OUT -->
+        <div id="profileDetailsPanel" class="auth-form-panel hidden">
+          <div class="user-profile-card">
+            <div class="user-avatar-wrap">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="user-profile-meta">
+              <h4 class="user-profile-name" id="profileCardName">Aarav Sharma</h4>
+              <p class="user-profile-email" id="profileCardEmail">aarav.sharma@wiseyak.com</p>
+              <div class="user-status-pill">
+                <span class="user-status-dot"></span>
+                <span>Active Annotator</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Personal Progress Track -->
+          <div class="user-progress-box">
+            <div class="user-progress-header">
+              <span class="user-progress-label">Personal Evaluation Progress</span>
+              <span class="user-progress-val" id="profileProgressText">0 / 1,712 (0%)</span>
+            </div>
+            <div class="user-progress-track">
+              <div class="user-progress-fill" id="profileProgressFill" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="profile-metrics-grid">
+            <div class="pmetric-box">
+              <span class="pmetric-num" id="profileCardEvaluated">0</span>
+              <span class="pmetric-title">Evaluations</span>
+            </div>
+            <div class="pmetric-box pmetric-up">
+              <span class="pmetric-num" id="profileCardThumbsUp">0</span>
+              <span class="pmetric-title">Thumbs Up</span>
+            </div>
+            <div class="pmetric-box pmetric-down">
+              <span class="pmetric-num" id="profileCardThumbsDown">0</span>
+              <span class="pmetric-title">Thumbs Down</span>
+            </div>
+          </div>
+
+          <div class="profile-actions-stack">
+            <button type="button" class="btn-secondary profile-action-btn" id="profileExportBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Export My Annotations (JSON)</span>
+            </button>
+            <button type="button" class="btn-danger-outline profile-action-btn" id="signOutBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              <span>Sign Out of Platform</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Element -->
+  <audio id="globalAudioPlayer" preload="none"></audio>
+
+  <!-- Notification Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Client Application Script -->
+  <script src="/static/js/app.js?v=6.0"></script>
+</body>
+</html>

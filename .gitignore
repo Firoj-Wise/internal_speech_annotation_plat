@@ -1,0 +1,28 @@
+# Audio Cache (regenerable with generate_audios.py or on-demand TTS)
+audios/
+*.wav
+
+# SQLite Database & State
+*.db
+*.db-wal
+*.db-shm
+data/*.db
+data/annotations.db
+
+# Annotator runtime data
+data/annotations/*.json
+data/annotators/*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# System / IDE
+.DS_Store
+.agents/
+.claude/
+skills-lock.json

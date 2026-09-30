@@ -1,0 +1,35 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8765
+  },
+  "app": {
+    "name": "NepSyn Plat",
+    "subtitle": "Nepali Speech Synthesis Platform"
+  },
+  "dataset": {
+    "file_path": "polysemous_words_sentences 1.json"
+  },
+  "storage": {
+    "db_path": "data/annotations.db",
+    "annotators_dir": "data/annotators",
+    "annotations_dir": "data/annotations",
+    "audio_dir": "audios"
+  },
+  "tts": {
+    "api_url": "https://dev-tts.wiseai.wiseyak.com/generate_from_text",
+    "model": "omnivoice_tts",
+    "reference_audio_id": "Pratikshya",
+    "language": "nep",
+    "output_type": "audio",
+    "audio_speed": 1,
+    "bucket_name": "string",
+    "target_sample_rate": 0,
+    "filename_prefix": "nep_audio",
+    "user_id": "string",
+    "organization": "string",
+    "service": "string",
+    "request_timeout_seconds": 30,
+    "batch_concurrency": 4
+  }
+}
