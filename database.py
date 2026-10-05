@@ -241,12 +241,111 @@ class Database:
         # Dynamically sync JSON export for this annotator
         self.export_annotator_json(annotator_id)
 
+        # Dynamically sync SQL dump on every annotation save
+        try:
+            self.export_sql_dump()
+        except Exception as e:
+            print("Auto SQL dump export warning:", e)
+
+        # Dynamically sync defect studio dataset & training pipeline export
+        try:
+            import importlib
+            import export_training_pipeline
+            importlib.reload(export_training_pipeline)
+            export_training_pipeline.export_pipeline_dataset()
+        except Exception as e:
+            print("Auto defect pipeline export warning:", e)
+
         return {
             "annotator_id": annotator_id,
             "item_id": item_id,
             "score": score,
             "notes": notes,
             "updated_at": now_str
+        }
+
+    def export_sql_dump(self, output_path: str = "annotations_dump.sql") -> str:
+        with self.get_conn() as conn:
+            with open(output_path, "w", encoding="utf-8") as f:
+                for line in conn.iterdump():
+                    f.write(f"{line}\n")
+        return output_path
+
+    def get_global_overview(self) -> dict:
+        total_dataset_items = DATASET.get_total_items()
+        sql_file = Path("annotations_dump.sql")
+        sql_info = {
+            "exists": sql_file.exists(),
+            "size_bytes": sql_file.stat().st_size if sql_file.exists() else 0,
+            "last_modified": datetime.datetime.fromtimestamp(sql_file.stat().st_mtime).isoformat() if sql_file.exists() else None
+        }
+
+        with self.get_conn() as conn:
+            # Total annotations count
+            total_annotations = conn.execute("SELECT COUNT(*) as cnt FROM annotations").fetchone()["cnt"]
+
+            # Distinct items annotated
+            distinct_items = conn.execute("SELECT COUNT(DISTINCT item_id) as cnt FROM annotations").fetchone()["cnt"]
+
+            # Global thumbs up / thumbs down
+            thumbs_up = conn.execute("SELECT COUNT(*) as cnt FROM annotations WHERE score = 'thumbs_up'").fetchone()["cnt"]
+            thumbs_down = conn.execute("SELECT COUNT(*) as cnt FROM annotations WHERE score = 'thumbs_down'").fetchone()["cnt"]
+
+            # Annotator breakdown
+            annotator_rows = conn.execute("""
+                SELECT 
+                    a.annotator_id,
+                    COALESCE(u.name, a.annotator_id) as name,
+                    COALESCE(u.email, '') as email,
+                    COUNT(a.id) as total_evals,
+                    SUM(CASE WHEN a.score = 'thumbs_up' THEN 1 ELSE 0 END) as thumbs_up_count,
+                    SUM(CASE WHEN a.score = 'thumbs_down' THEN 1 ELSE 0 END) as thumbs_down_count,
+                    MAX(a.updated_at) as last_activity
+                FROM annotations a
+                LEFT JOIN annotators u ON a.annotator_id = u.annotator_id
+                GROUP BY a.annotator_id
+                ORDER BY total_evals DESC
+            """).fetchall()
+
+            annotators = []
+            for r in annotator_rows:
+                total_ev = r["total_evals"] or 0
+                pct = round((total_ev / total_dataset_items * 100), 1) if total_dataset_items > 0 else 0.0
+                annotators.append({
+                    "annotator_id": r["annotator_id"],
+                    "name": r["name"],
+                    "email": r["email"],
+                    "total_evals": total_ev,
+                    "thumbs_up": r["thumbs_up_count"] or 0,
+                    "thumbs_down": r["thumbs_down_count"] or 0,
+                    "percentage": pct,
+                    "last_activity": r["last_activity"]
+                })
+
+            # Recent defect / flawed notes (or items with notes)
+            defect_rows = conn.execute("""
+                SELECT item_id, word, sentence_text, score, notes, updated_at, annotator_id
+                FROM annotations
+                WHERE notes IS NOT NULL AND TRIM(notes) != ''
+                ORDER BY updated_at DESC
+                LIMIT 20
+            """).fetchall()
+
+            recent_notes = [dict(r) for r in defect_rows]
+
+        completion_pct = round((distinct_items / total_dataset_items * 100), 1) if total_dataset_items > 0 else 0.0
+
+        return {
+            "total_dataset_items": total_dataset_items,
+            "total_annotations": total_annotations,
+            "distinct_items_annotated": distinct_items,
+            "pending_items": max(0, total_dataset_items - distinct_items),
+            "completion_percentage": completion_pct,
+            "thumbs_up_count": thumbs_up,
+            "thumbs_down_count": thumbs_down,
+            "annotators": annotators,
+            "recent_defect_notes": recent_notes,
+            "sql_dump": sql_info
         }
 
     def get_annotator_annotations(self, annotator_id: str) -> Dict[str, dict]:

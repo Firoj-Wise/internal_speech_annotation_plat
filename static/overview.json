@@ -1,0 +1,266 @@
+{
+  "total_dataset_items": 1712,
+  "total_words": 392,
+  "total_annotations": 1713,
+  "distinct_items_annotated": 1712,
+  "pending_items": 0,
+  "completion_percentage": 100.0,
+  "thumbs_up_count": 1494,
+  "thumbs_down_count": 219,
+  "annotators": [
+    {
+      "annotator_id": "subashsah_wiseyak",
+      "name": "Subash Sah",
+      "email": "subash.sah@wiseyak.com",
+      "total_evals": 1712,
+      "thumbs_up": 1493,
+      "thumbs_down": 219,
+      "percentage": 100.0,
+      "last_activity": "2026-10-05T09:24:40.482126"
+    },
+    {
+      "annotator_id": "testannotator_20260930044933",
+      "name": "Test Annotator",
+      "email": "test@wiseyak.com",
+      "total_evals": 1,
+      "thumbs_up": 1,
+      "thumbs_down": 0,
+      "percentage": 0.1,
+      "last_activity": "2026-09-30T04:49:33.081054"
+    }
+  ],
+  "recent_defect_notes": [
+    {
+      "item_id": "6ba7f69ab02364",
+      "word": "हुप",
+      "sentence_text": "सारीको आँचल काँधबाट चिप्लिन नदिन बहिनीले मसिनो हुप लगाएर बलियोसँग अड्काइन्।",
+      "score": "thumbs_down",
+      "notes": "नदिन",
+      "updated_at": "2026-10-05T09:22:42.431413",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "d922a415fed59c",
+      "word": "हार",
+      "sentence_text": "विशिष्ट पाहुनाको स्वागतका लागि विद्यार्थीहरू सडकको दुवै किनारमा अनुशासित हार बाँधेर उभिएका थिए।",
+      "score": "thumbs_down",
+      "notes": "अनुशासित",
+      "updated_at": "2026-10-05T09:22:29.634009",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "c2cb5f6b5946e3",
+      "word": "हल",
+      "sentence_text": "आपसी छलफल, समझदारी र वार्ताबाट नै यो राजनीतिक संकटको स्थायी हल निस्कन सक्छ।",
+      "score": "thumbs_down",
+      "notes": "आपसी",
+      "updated_at": "2026-10-05T09:20:09.656870",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "4c6840bbe5a8de",
+      "word": "हर",
+      "sentence_text": "सीमा सुरक्षामा खटिएका सुरक्षाकर्मीहरू हर घडी चनाखो भएर बस्नुपर्छ।",
+      "score": "thumbs_down",
+      "notes": "चनाखो",
+      "updated_at": "2026-10-05T09:18:16.156313",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "b48f9e8a574201",
+      "word": "हकार",
+      "sentence_text": "राजाको औपचारिक हकार पाएपछि राज्यका सम्पूर्ण भद्रभलादमीहरू दरबारमा उपस्थित भए।",
+      "score": "thumbs_down",
+      "notes": "भद्रभलादमीहरू",
+      "updated_at": "2026-10-05T09:17:06.709120",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "a19d8ffca13b9a",
+      "word": "हकार",
+      "sentence_text": "काम बिगारेपछि व्यवस्थापकको कडा हकार सुनेर कर्मचारीले तुरुन्त आफ्नो गल्ती सच्यायो।",
+      "score": "thumbs_down",
+      "notes": "बिगारेपछि",
+      "updated_at": "2026-10-05T09:16:38.102226",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "381bdff5dcad2c",
+      "word": "सोल",
+      "sentence_text": "हिउँमा चिप्लिनबाट जोगिनका लागि गहिरो ग्रिप भएको बलियो सोल भएको बुट लगाउनुपर्छ।",
+      "score": "thumbs_down",
+      "notes": "चिप्लिनबाट",
+      "updated_at": "2026-10-05T09:16:02.520021",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "ed5564141d8d4d",
+      "word": "सोर",
+      "sentence_text": "हिजो भएको दौड प्रतियोगितामा सोर जना धावकहरूले भाग लिएका थिए।",
+      "score": "thumbs_down",
+      "notes": "सोर",
+      "updated_at": "2026-10-05T09:15:29.333699",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "abff1ced90a357",
+      "word": "सोर",
+      "sentence_text": "साहुजीले गोदामबाट सोर माना चामल जोखेर ग्राहकको झोलामा हालिदिए।",
+      "score": "thumbs_down",
+      "notes": "सोर",
+      "updated_at": "2026-10-05T09:15:12.086705",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "e6e2605375011d",
+      "word": "सेर",
+      "sentence_text": "देउडा नाच हेर्न आएका पाहुनाहरूलाई तातो चियासँग स्थानीय परिकार सेर खुवाएर स्वागत गरियो।",
+      "score": "thumbs_down",
+      "notes": "सेर",
+      "updated_at": "2026-10-05T09:13:20.908011",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "d6b95d9f3caeab",
+      "word": "सेर",
+      "sentence_text": "सुदूरपश्चिमको गाउँमा मही र चामलको पिठो राम्ररी फिटेर परम्परागत सेर रोटी तयार पारियो।",
+      "score": "thumbs_down",
+      "notes": "सेर",
+      "updated_at": "2026-10-05T09:12:21.372591",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "0e21c5af04c174",
+      "word": "सेर",
+      "sentence_text": "जङ्गलको शान्त वातावरणलाई चिर्दै भयानक गर्जनका साथ सेर आफ्नो गुफाबाट बाहिर निस्कियो।",
+      "score": "thumbs_down",
+      "notes": "सेर",
+      "updated_at": "2026-10-05T09:11:23.235626",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "c941f904031ab7",
+      "word": "सेन्ट",
+      "sentence_text": "औपनिवेशिक कालका पुराना सिक्काहरूको अध्ययन गर्दा बेलायती मौद्रिक प्रणालीमा सेन्टको स्थान प्रस्ट हुन्छ।",
+      "score": "thumbs_down",
+      "notes": "प्रस्ट",
+      "updated_at": "2026-10-05T09:09:33.450385",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "9c9dd196ce35b8",
+      "word": "सुर",
+      "sentence_text": "गायकले तबला र तानपुराको सुरसँग आवाज मिलाएर शास्त्रीय राग गाउन सुरु गरे।",
+      "score": "thumbs_down",
+      "notes": "तबला",
+      "updated_at": "2026-10-05T09:07:22.451588",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "676a31bbc8682a",
+      "word": "सुर",
+      "sentence_text": "कागजको पाना दोब्य्राएर खाम बनाउँदा प्रत्येक सुर सीधा र मिलेको हुनुपर्छ।",
+      "score": "thumbs_down",
+      "notes": "दोब्य्राएर",
+      "updated_at": "2026-10-05T09:06:44.232654",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "56067d0e6a6fed",
+      "word": "सुकुल",
+      "sentence_text": "धनसम्पत्तिले मात्र होइन, असल आचरण र परोपकारी भावनाले मानिस सुकुलको ठहरिन्छ।",
+      "score": "thumbs_down",
+      "notes": "परोपकारी",
+      "updated_at": "2026-10-05T09:04:40.238623",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "8b09a1a586c827",
+      "word": "सिम",
+      "sentence_text": "हिउँदमा पनि सिम जग्गामा गोडा भासिने डर हुने हुँदा वस्तुभाउ चराउन लगिँदैन।",
+      "score": "thumbs_down",
+      "notes": "जग्गामा",
+      "updated_at": "2026-10-05T09:02:31.342632",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "4adfb637a40d91",
+      "word": "सित",
+      "sentence_text": "महाशिवरात्रिका दिन भक्तजनहरू सित वस्त्र धारण गरेर मन्दिरमा पूजा गर्न पुगे।",
+      "score": "thumbs_down",
+      "notes": "महाशिवरात्रिका",
+      "updated_at": "2026-10-05T09:02:00.972986",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "f617c1cfa4bf61",
+      "word": "साल",
+      "sentence_text": "घरलाई सुरक्षित राख्न र जनावर पस्न नदिन आँगन वरिपरि ढुङ्गाको अग्लो साल (पर्खाल) उठाइएको छ।",
+      "score": "thumbs_down",
+      "notes": "नदिन",
+      "updated_at": "2026-10-05T08:59:38.586992",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "b07ffd1f684306",
+      "word": "सान",
+      "sentence_text": "हल्लाखल्ला भएको सभामा उसले हातको सान दिएर साथीलाई बाहिर आउन इसारा गर्‍यो।",
+      "score": "thumbs_down",
+      "notes": "हल्लाखल्ला",
+      "updated_at": "2026-10-05T08:30:35.748804",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "570ca6fd62e0f5",
+      "word": "साधक",
+      "sentence_text": "आफ्नो अधिकारक्षेत्रभन्दा बाहिरको जग्गा विवाद भएकाले जिल्ला अदालतले रायसहितको साधक माथिल्लो अदालतमा पठायो।",
+      "score": "thumbs_down",
+      "notes": "अधिकारक्षेत्रभन्दा",
+      "updated_at": "2026-10-05T08:29:59.717778",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "2141c799ebf71c",
+      "word": "साज",
+      "sentence_text": "बिहेका लागि दुलहीलाई परम्परागत गरगहना र आकर्षक साजसज्जाले सिँगारियो।",
+      "score": "thumbs_down",
+      "notes": "दुलहीलाई",
+      "updated_at": "2026-10-05T08:29:20.109140",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "d50a584e2efc2f",
+      "word": "साँध",
+      "sentence_text": "खेतको साँध मिचिएको विषयलाई लिएर दुई छिमेकीबिच लामो भनाभन भयो।",
+      "score": "thumbs_down",
+      "notes": "साँध",
+      "updated_at": "2026-10-05T08:27:47.884399",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "3ac8275a304c45",
+      "word": "सम्म",
+      "sentence_text": "काठमाडौँदेखि पोखरासम्म नयाँ द्रुतमार्ग निर्माणको कार्य तीव्र गतिमा अघि बढिरहेको छ।",
+      "score": "thumbs_down",
+      "notes": "पोखरासम्म",
+      "updated_at": "2026-10-05T08:23:55.203707",
+      "annotator_id": "subashsah_wiseyak"
+    },
+    {
+      "item_id": "e1f4f0bf34ed98",
+      "word": "सब",
+      "sentence_text": "उनले आफ्नो सब धनसम्पत्ति दीनदुःखीहरूको सेवामा खर्च गरिदिए।",
+      "score": "thumbs_down",
+      "notes": "धनसम्पत्ति",
+      "updated_at": "2026-10-05T08:21:56.230874",
+      "annotator_id": "subashsah_wiseyak"
+    }
+  ],
+  "sql_dump": {
+    "path": "/static/annotations_dump.sql",
+    "size_bytes": 1160296,
+    "size_kb": 1133.1,
+    "last_modified": "2026-10-05T09:37:53.464859"
+  },
+  "last_synced": "2026-10-05T09:37:53.464868"
+}

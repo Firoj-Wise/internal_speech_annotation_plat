@@ -274,6 +274,32 @@ async def api_config_info(request):
         "audio_speed": CONFIG["tts"]["audio_speed"]
     })
 
+async def api_get_overview(request):
+    overview = DB.get_global_overview()
+    return web.json_response(overview)
+
+async def api_export_sql(request):
+    sql_path = Path("annotations_dump.sql")
+    if not sql_path.exists():
+        DB.export_sql_dump()
+    return web.FileResponse(
+        sql_path,
+        headers={
+            "Content-Type": "application/sql; charset=utf-8",
+            "Content-Disposition": 'attachment; filename="annotations_dump.sql"'
+        }
+    )
+
+async def api_sync_sql(request):
+    path = DB.export_sql_dump()
+    overview = DB.get_global_overview()
+    return web.json_response({
+        "status": "ok",
+        "file": str(path),
+        "size_bytes": Path(path).stat().st_size if Path(path).exists() else 0,
+        "overview": overview
+    })
+
 def make_app():
     app = web.Application(client_max_size=10*1024*1024)
 
@@ -284,11 +310,14 @@ def make_app():
     app.router.add_post("/api/onboard", api_onboard)
     app.router.add_get("/api/annotators", api_list_annotators)
     app.router.add_get("/api/stats", api_get_stats)
+    app.router.add_get("/api/overview", api_get_overview)
     app.router.add_get("/api/words", api_get_words)
     app.router.add_get("/api/items", api_get_items)
     app.router.add_get("/api/item/{item_id}", api_get_item)
     app.router.add_post("/api/annotate", api_annotate)
     app.router.add_get("/api/audio/{item_id}", api_audio_handler)
+    app.router.add_get("/api/export/sql", api_export_sql)
+    app.router.add_post("/api/export/sql/sync", api_sync_sql)
     app.router.add_get("/api/export/{annotator_id}", api_export_user_json)
     app.router.add_get("/api/config", api_config_info)
 

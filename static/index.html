@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css?v=9.0">
+  <link rel="stylesheet" href="/static/css/style.css?v=14.0">
 </head>
 <body>
   <!-- Main Container -->
@@ -40,14 +40,25 @@
       </div>
 
       <div class="header-right">
-        <!-- Analytics Toggle Button -->
-        <button class="pill-btn analytics-toggle-btn" id="toggleAnalyticsBtn" title="Session Analytics">
+        <!-- Analytics & DB Overview Toggle Button -->
+        <button class="pill-btn analytics-toggle-btn" id="toggleAnalyticsBtn" title="Database & Analytics Overview">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="20" x2="18" y2="10"></line>
             <line x1="12" y1="20" x2="12" y2="4"></line>
             <line x1="6" y1="20" x2="6" y2="14"></line>
           </svg>
-          <span>Analytics</span>
+          <span>Database & Stats</span>
+          <span class="analytics-badge" id="headerAnalyticsBadge">72.9%</span>
+        </button>
+
+        <!-- Side-by-Side Defect Studio Toggle Button -->
+        <button class="pill-btn defect-studio-btn" id="openDefectStudioBtn" title="Side-by-Side Defect Studio & Training Evaluation">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+          </svg>
+          <span>Defect Studio (Side-by-Side)</span>
+          <span class="defect-badge" id="headerDefectBadge">221</span>
         </button>
 
         <!-- Annotator Profile -->
@@ -158,52 +169,185 @@
               <p class="definition-text devanagari" id="definitionText">--</p>
             </div>
 
-            <!-- Nepali Sentence Demonstration Box -->
-            <div class="sentence-showcase-card">
+            <!-- Nepali Sentence Demonstration Box with Selection Commenting -->
+            <div class="sentence-showcase-card" id="sentenceShowcaseCard">
               <div class="sentence-header">
-                <span class="sentence-key-label" id="sentenceKeyLabel">Sentence Context 1</span>
+                <div class="sentence-header-left">
+                  <span class="sentence-key-label" id="sentenceKeyLabel">Sentence Context 1</span>
+                  <span class="selection-annotation-hint">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 20h9"></path>
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                    <span>Highlight text to comment</span>
+                  </span>
+                </div>
                 <span class="audio-cache-status" id="audioCacheStatus">Checking audio...</span>
               </div>
-              <p class="sentence-content devanagari" id="sentenceContent">
-                Select an item from the vocabulary list to begin.
-              </p>
+
+              <!-- Sentence Content Text Container -->
+              <div class="sentence-content-wrapper">
+                <p class="sentence-content devanagari" id="sentenceContent">
+                  Select an item from the vocabulary list to begin.
+                </p>
+
+                <!-- Floating Selection Comment Popover -->
+                <div class="selection-comment-popover hidden" id="selectionCommentPopover">
+                  <div class="popover-header">
+                    <div class="popover-title-row">
+                      <span class="popover-title-label">Comment on:</span>
+                      <strong class="popover-selected-word devanagari" id="popoverSelectedWord">word</strong>
+                    </div>
+                    <button type="button" class="popover-close-btn" id="popoverCancelBtn" title="Cancel">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- Quick Tag Pills -->
+                  <div class="popover-quick-tags" id="popoverQuickTags">
+                    <button type="button" class="pop-tag-btn active" data-tag="उच्चारण (Pronunciation)">उच्चारण</button>
+                    <button type="button" class="pop-tag-btn" data-tag="तनाव/गति (Stress/Prosody)">तनाव</button>
+                    <button type="button" class="pop-tag-btn" data-tag="संयुक्ताक्षर (Cluster Blur)">संयुक्ताक्षर</button>
+                    <button type="button" class="pop-tag-btn" data-tag="चन्द्रविन्दु (Nasal Loss)">चन्द्रविन्दु</button>
+                    <button type="button" class="pop-tag-btn" data-tag="विराम/काटियो (Pause/Cutoff)">विराम</button>
+                  </div>
+
+                  <!-- Popover Note Input -->
+                  <div class="popover-input-row">
+                    <input type="text" id="popoverCommentInput" class="popover-text-input devanagari" placeholder="Add specific feedback for this word..." autocomplete="off">
+                    <button type="button" class="popover-submit-btn" id="popoverAddCommentBtn">
+                      <span>Add</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- In-line Comments List Deck (Google Docs-Style) -->
+              <div class="sentence-comments-deck hidden" id="sentenceCommentsDeck">
+                <div class="comments-deck-header">
+                  <div class="comments-deck-title">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>In-line Text Comments (<span id="sentenceCommentsCount">0</span>)</span>
+                  </div>
+                  <span class="comments-deck-hint">Attached to selected text spans</span>
+                </div>
+                <div class="sentence-comments-list" id="sentenceCommentsList">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
             </div>
 
-            <!-- Premium Audio Controller -->
+            <!-- DUAL AUDIO COMPARISON DOCK: Candidate vs Gemini Gold Reference -->
             <div class="audio-dock-container">
-              <div class="audio-controls-row">
-                <button class="play-trigger-btn" id="playAudioBtn" title="Play / Pause Audio (Spacebar)">
-                  <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              <div class="audio-dock-top-header">
+                <div class="audio-dock-title-wrap">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                   </svg>
-                  <svg id="pauseIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                    <rect x="6" y="4" width="4" height="16"></rect>
-                    <rect x="14" y="4" width="4" height="16"></rect>
-                  </svg>
-                </button>
+                  <span class="audio-dock-title">A/B Audio Comparison &amp; Benchmark</span>
+                </div>
+                <div class="audio-hotkey-pills">
+                  <span class="hotkey-pill-label">Hotkeys:</span>
+                  <span class="hotkey-badge"><kbd>Space</kbd> Candidate</span>
+                  <span class="hotkey-badge"><kbd>R</kbd> Gemini Reference</span>
+                </div>
+              </div>
 
-                <div class="audio-timeline-wrap">
-                  <div class="audio-scrub-bar" id="audioScrubBar">
-                    <div class="audio-scrub-fill" id="audioScrubFill" style="width: 0%;"></div>
+              <!-- Channel 1: Candidate Audio (OmniVoice - Model Under Evaluation) -->
+              <div class="audio-channel-card channel-candidate">
+                <div class="channel-header-row">
+                  <div class="channel-meta-left">
+                    <span class="channel-status-dot dot-blue"></span>
+                    <span class="channel-name">Candidate Audio (OmniVoice)</span>
                   </div>
-                  <div class="audio-timestamp-row">
-                    <span id="audioCurrentTime">00:00</span>
-                    <span id="audioDuration">00:00</span>
-                  </div>
+                  <span class="channel-tag tag-candidate">Model Under Evaluation</span>
                 </div>
 
-                <div class="audio-speed-selector">
-                  <button class="speed-btn" data-speed="0.75">0.75x</button>
-                  <button class="speed-btn active" data-speed="1.0">1.0x</button>
-                  <button class="speed-btn" data-speed="1.25">1.25x</button>
+                <div class="audio-controls-row">
+                  <button class="play-trigger-btn candidate-play-btn" id="playAudioBtn" title="Play / Pause Candidate Audio (Spacebar)">
+                    <svg id="playIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <svg id="pauseIcon" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <rect x="6" y="4" width="4" height="16"></rect>
+                      <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                  </button>
+
+                  <div class="audio-timeline-wrap">
+                    <div class="audio-scrub-bar" id="audioScrubBar">
+                      <div class="audio-scrub-fill" id="audioScrubFill" style="width: 0%;"></div>
+                    </div>
+                    <div class="audio-timestamp-row">
+                      <span id="audioCurrentTime">00:00</span>
+                      <span id="audioDuration">00:00</span>
+                    </div>
+                  </div>
+
+                  <div class="audio-speed-selector">
+                    <button class="speed-btn" data-speed="0.75">0.75x</button>
+                    <button class="speed-btn active" data-speed="1.0">1.0x</button>
+                    <button class="speed-btn" data-speed="1.25">1.25x</button>
+                  </div>
+
+                  <button class="replay-btn" id="replayAudioBtn" title="Replay candidate from start">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                      <path d="M3 3v5h5"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Channel 2: Reference Audio (Gemini 3.8 Flash - Ideal Gold Reference) -->
+              <div class="audio-channel-card channel-reference">
+                <div class="channel-header-row">
+                  <div class="channel-meta-left">
+                    <span class="channel-status-dot dot-emerald"></span>
+                    <span class="channel-name">Ideal Reference (Gemini 3.8 Flash TTS)</span>
+                  </div>
+                  <span class="channel-tag tag-reference">Gold Standard Benchmark</span>
                 </div>
 
-                <button class="replay-btn" id="replayAudioBtn" title="Replay from start">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                    <path d="M3 3v5h5"></path>
-                  </svg>
-                </button>
+                <div class="audio-controls-row">
+                  <button class="play-trigger-btn reference-play-btn" id="playRefAudioBtn" title="Play / Pause Reference Audio (Key: R)">
+                    <svg id="refPlayIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <svg id="refPauseIcon" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <rect x="6" y="4" width="4" height="16"></rect>
+                      <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                  </button>
+
+                  <div class="audio-timeline-wrap">
+                    <div class="audio-scrub-bar ref-scrub-bar" id="refAudioScrubBar">
+                      <div class="audio-scrub-fill ref-scrub-fill" id="refAudioScrubFill" style="width: 0%;"></div>
+                    </div>
+                    <div class="audio-timestamp-row">
+                      <span id="refAudioCurrentTime">00:00</span>
+                      <span id="refAudioDuration">00:00</span>
+                    </div>
+                  </div>
+
+                  <div class="audio-speed-selector">
+                    <button class="speed-btn ref-speed-btn" data-speed="0.75">0.75x</button>
+                    <button class="speed-btn ref-speed-btn active" data-speed="1.0">1.0x</button>
+                  </div>
+
+                  <button class="replay-btn" id="replayRefAudioBtn" title="Replay reference from start">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                      <path d="M3 3v5h5"></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -334,7 +478,10 @@
             <line x1="12" y1="20" x2="12" y2="4"></line>
             <line x1="6" y1="20" x2="6" y2="14"></line>
           </svg>
-          <h3 class="panel-title">Session Analytics</h3>
+          <div>
+          <h3 class="panel-title">Database & Annotation Hub</h3>
+          <span class="panel-subtitle-tag" id="drawerSyncTimeBadge">Live SQLite Sync • Synced</span>
+        </div>
         </div>
         <button class="drawer-close-btn" id="closeAnalyticsDrawerBtn" title="Close" type="button">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -344,75 +491,177 @@
         </button>
       </div>
 
+      <!-- Drawer Sub-Navigation Tabs -->
+      <div class="drawer-tabs-row" id="drawerTabsRow">
+        <button class="drawer-tab active" id="tabOverviewGlobal" type="button">Platform DB</button>
+        <button class="drawer-tab" id="tabOverviewAnnotators" type="button">Annotators (<span id="annotatorsCountBadge">2</span>)</button>
+        <button class="drawer-tab" id="tabOverviewDefects" type="button">Defect Log (<span id="defectsCountBadge">156</span>)</button>
+        <button class="drawer-tab" id="tabOverviewPipeline" type="button">Pipeline</button>
+      </div>
+
       <div class="drawer-body">
-        <div class="stats-card">
-          <div class="stat-row">
-            <span class="stat-name">Total Vocabulary Words</span>
-            <span class="stat-badge" id="statTotalWords">392</span>
+        
+        <!-- PANEL 1: GLOBAL DATABASE OVERVIEW -->
+        <div class="drawer-panel" id="panelOverviewGlobal">
+          <!-- Hero Progress Card -->
+          <div class="db-hero-card">
+            <div class="db-hero-header">
+              <span class="db-hero-label">Overall Platform Evaluation</span>
+              <span class="db-hero-pct" id="globalPctBadge">72.9%</span>
+            </div>
+            <div class="db-hero-count-row">
+              <h2 class="db-hero-count"><span id="globalEvaluatedCount">1,248</span> <span class="db-hero-denom">/ 1,712</span></h2>
+              <span class="db-pending-pill"><span id="globalPendingCount">464</span> Sentences Left</span>
+            </div>
+            <!-- Dual Multi-Color Progress Track -->
+            <div class="db-multi-progress-track">
+              <div class="db-multi-fill fill-up" id="globalMultiFillUp" style="width: 63.8%;"></div>
+              <div class="db-multi-fill fill-down" id="globalMultiFillDown" style="width: 9.1%;"></div>
+            </div>
+            <div class="db-metrics-split-row">
+              <div class="db-split-box box-up">
+                <span class="db-split-val" id="globalThumbsUpCount">1,092</span>
+                <span class="db-split-title">Thumbs Up (<span id="globalThumbsUpPct">87.5%</span>)</span>
+              </div>
+              <div class="db-split-box box-down">
+                <span class="db-split-val" id="globalThumbsDownCount">156</span>
+                <span class="db-split-title">Thumbs Down (<span id="globalThumbsDownPct">12.5%</span>)</span>
+              </div>
+            </div>
           </div>
-          <div class="stat-row">
-            <span class="stat-name">Total Test Sentences</span>
-            <span class="stat-badge" id="statTotalSentences">1,712</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">Evaluated Sentences</span>
-            <span class="stat-badge stat-badge-eval" id="statEvaluatedCount">0</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">Pending Sentences</span>
-            <span class="stat-badge stat-badge-pending" id="statPendingCount">1,712</span>
+
+          <!-- SQL Live Sync & Export Card -->
+          <div class="db-sql-card">
+            <div class="db-sql-header">
+              <div class="db-sql-title-wrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span class="db-sql-name">annotations_dump.sql</span>
+              </div>
+              <span class="db-sql-status-pill">SQLite Synced</span>
+            </div>
+            <p class="db-sql-desc">Complete SQL query file containing table schemas and all 1,248+ sentence evaluation records. Auto-syncs live on evaluation saves.</p>
+            <div class="db-sql-actions">
+              <a href="/static/annotations_dump.sql" download="annotations_dump.sql" class="pill-btn db-action-download" id="downloadSqlBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Download SQL File (<span id="sqlFileSize">850 KB</span>)</span>
+              </a>
+              <button type="button" class="pill-btn db-action-refresh" id="refreshOverviewBtn" title="Re-run database stats query">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+                <span>Refresh Query</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="scoring-breakdown-card">
-          <div class="card-subtitle-row">
-            <h4 class="card-subtitle">Scoring Distribution</h4>
+        <!-- PANEL 2: ANNOTATOR ROSTER BREAKDOWN -->
+        <div class="drawer-panel hidden" id="panelOverviewAnnotators">
+          <div class="roster-header-meta">
+            <span class="roster-title">Active Platform Annotators</span>
+            <span class="roster-subtitle">Evaluation progress per account</span>
           </div>
-          <div class="distribution-bar-wrap">
-            <div class="dist-bar dist-thumbs-up" id="distThumbsUpBar" style="width: 50%;"></div>
-            <div class="dist-bar dist-thumbs-down" id="distThumbsDownBar" style="width: 50%;"></div>
+          <div class="annotators-roster-list" id="annotatorsRosterList">
+            <!-- Dynamically populated -->
+            <div class="loading-state">Loading annotators...</div>
           </div>
-          <div class="dist-legend-row">
-            <div class="dist-legend-item">
-              <span class="dist-color-dot dot-up"></span>
-              <span class="dist-label">Thumbs Up:</span>
-              <span class="dist-num" id="statThumbsUpNum">0</span>
+        </div>
+
+        <!-- PANEL 3: RECENT DEFECTS & FLAW NOTES -->
+        <div class="drawer-panel hidden" id="panelOverviewDefects">
+          <div class="roster-header-meta">
+            <span class="roster-title">Flagged Defect Notes</span>
+            <span class="roster-subtitle">Latest pronunciation & synthesis flaws</span>
+          </div>
+          <div class="defects-log-list" id="defectsLogList">
+            <!-- Dynamically populated -->
+            <div class="loading-state">Loading defect notes...</div>
+          </div>
+        </div>
+
+        <!-- PANEL 4: PIPELINE & SYSTEM PARAMETERS -->
+        <div class="drawer-panel hidden" id="panelOverviewPipeline">
+          <div class="stats-card">
+            <div class="stat-row">
+              <span class="stat-name">Total Vocabulary Words</span>
+              <span class="stat-badge" id="statTotalWords">392</span>
             </div>
-            <div class="dist-legend-item">
-              <span class="dist-color-dot dot-down"></span>
-              <span class="dist-label">Thumbs Down:</span>
-              <span class="dist-num" id="statThumbsDownNum">0</span>
+            <div class="stat-row">
+              <span class="stat-name">Total Test Sentences</span>
+              <span class="stat-badge" id="statTotalSentences">1,712</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Evaluated Sentences</span>
+              <span class="stat-badge stat-badge-eval" id="statEvaluatedCount">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Pending Sentences</span>
+              <span class="stat-badge stat-badge-pending" id="statPendingCount">1,712</span>
+            </div>
+          </div>
+
+          <div class="scoring-breakdown-card">
+            <div class="card-subtitle-row">
+              <h4 class="card-subtitle">Scoring Distribution</h4>
+            </div>
+            <div class="distribution-bar-wrap">
+              <div class="dist-bar dist-thumbs-up" id="distThumbsUpBar" style="width: 50%;"></div>
+              <div class="dist-bar dist-thumbs-down" id="distThumbsDownBar" style="width: 50%;"></div>
+            </div>
+            <div class="dist-legend-row">
+              <div class="dist-legend-item">
+                <span class="dist-color-dot dot-up"></span>
+                <span class="dist-label">Thumbs Up:</span>
+                <span class="dist-num" id="statThumbsUpNum">0</span>
+              </div>
+              <div class="dist-legend-item">
+                <span class="dist-color-dot dot-down"></span>
+                <span class="dist-label">Thumbs Down:</span>
+                <span class="dist-num" id="statThumbsDownNum">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- System Parameters Card -->
+          <div class="config-summary-card">
+            <div class="card-subtitle-row">
+              <h4 class="card-subtitle">Synthesizer Pipeline</h4>
+              <span class="engine-status-pill">Active</span>
+            </div>
+            <div class="config-field">
+              <span class="config-key">Cached Audios</span>
+              <span class="config-val cache-pill" id="cfgAudioCache">Checking...</span>
+            </div>
+            <div class="config-field">
+              <span class="config-key">Model</span>
+              <span class="config-val" id="cfgModel">omnivoice_tts</span>
+            </div>
+            <div class="config-field">
+              <span class="config-key">Voice Profile</span>
+              <span class="config-val" id="cfgVoice">Pratikshya</span>
+            </div>
+            <div class="config-field">
+              <span class="config-key">Language</span>
+              <span class="config-val" id="cfgLanguage">Nepali (nep)</span>
+            </div>
+            <div class="config-field">
+              <span class="config-key">Storage Format</span>
+              <span class="config-val">JSON + SQLite</span>
             </div>
           </div>
         </div>
 
-        <!-- System Parameters Card -->
-        <div class="config-summary-card">
-          <div class="card-subtitle-row">
-            <h4 class="card-subtitle">Synthesizer Pipeline</h4>
-            <span class="engine-status-pill">Active</span>
-          </div>
-          <div class="config-field">
-            <span class="config-key">Cached Audios</span>
-            <span class="config-val cache-pill" id="cfgAudioCache">Checking...</span>
-          </div>
-          <div class="config-field">
-            <span class="config-key">Model</span>
-            <span class="config-val" id="cfgModel">omnivoice_tts</span>
-          </div>
-          <div class="config-field">
-            <span class="config-key">Voice Profile</span>
-            <span class="config-val" id="cfgVoice">Pratikshya</span>
-          </div>
-          <div class="config-field">
-            <span class="config-key">Language</span>
-            <span class="config-val" id="cfgLanguage">Nepali (nep)</span>
-          </div>
-          <div class="config-field">
-            <span class="config-key">Storage Format</span>
-            <span class="config-val">JSON + SQLite</span>
-          </div>
-        </div>
       </div>
     </aside>
   </div>
@@ -604,13 +853,135 @@
     </div>
   </div>
 
-  <!-- Audio Element -->
+  <!-- SIDE-BY-SIDE DEFECT STUDIO & TRAINING PIPELINE MODAL -->
+  <div class="modal-overlay hidden" id="defectStudioModal">
+    <div class="modal-window defect-studio-window">
+      <!-- Studio Header -->
+      <div class="defect-studio-header">
+        <div class="defect-header-left">
+          <div class="defect-header-title-row">
+            <div class="defect-icon-badge">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="12" y1="3" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <div>
+              <h3 class="defect-studio-title">TTS Defect Studio &bull; Side-by-Side Inspector</h3>
+              <p class="defect-studio-subtitle" id="defectStudioSubtitle">Phonetic defect clustering &amp; ML training evaluation (<span id="defectStudioTotalCount">221</span> flaws cataloged)</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="defect-header-actions">
+          <div class="defect-live-badge" id="defectLiveBadge" title="Real-time live sync connected">
+            <span class="live-dot"></span>
+            <span>Live Sync</span>
+          </div>
+          <button type="button" class="pill-btn defect-action-sync" id="refreshDefectsStudioBtn" title="Sync live defects from database">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            <span>Sync Live</span>
+          </button>
+          <a href="/static/training_pipeline_defects.json" download="training_pipeline_defects.json" class="pill-btn defect-action-export" title="Download training pipeline JSON dataset">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Training Pipeline JSON</span>
+          </a>
+          <button class="modal-close-btn" id="closeDefectStudioBtn" type="button" title="Close Defect Studio (Esc)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Studio Body: 2-Column Split Layout -->
+      <div class="defect-studio-body">
+        <!-- LEFT COLUMN: Filters & Defect List -->
+        <aside class="defect-sidebar">
+          <div class="defect-sidebar-filters">
+            <!-- Search -->
+            <div class="search-box defect-search-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="defectSearchInput" placeholder="Search token, sentence, annotator..." autocomplete="off">
+            </div>
+
+            <!-- Annotator Selector (Supervisor & Multi-Annotator Mode) -->
+            <div class="defect-filter-section" id="defectAnnotatorSection">
+              <span class="defect-filter-heading">Annotator / Evaluator</span>
+              <div class="defect-filter-chips annotator-chips" id="defectAnnotatorChips">
+                <button class="def-chip ann-chip active" data-annotator="all">All Annotators (221)</button>
+              </div>
+            </div>
+
+            <!-- Category Pills -->
+            <div class="defect-filter-section">
+              <span class="defect-filter-heading">Phonetic &amp; Linguistic Categories</span>
+              <div class="defect-filter-chips" id="defectCategoryChips">
+                <button class="def-chip active" data-category="all">All (221)</button>
+                <button class="def-chip" data-category="consonant_cluster_coarticulation">Clusters (43)</button>
+                <button class="def-chip" data-category="case_marker_boundary_prosody">Case Markers (37)</button>
+                <button class="def-chip" data-category="nasalization_chandrabindu_loss">Nasal/Chandrabindu (26)</button>
+                <button class="def-chip" data-category="negative_prefix_prosody_stress">Negative Prefix (8)</button>
+                <button class="def-chip" data-category="lexical_pronunciation_defect">Lexical Defect (95)</button>
+              </div>
+            </div>
+
+            <!-- Repetitive Tokens Quick Filters -->
+            <div class="defect-filter-section">
+              <span class="defect-filter-heading">Top Repeated Flaws (High Priority)</span>
+              <div class="defect-filter-chips repetitive-chips" id="defectRepetitiveChips">
+                <button class="def-chip rep-chip" data-token="all">Clear Filter</button>
+                <button class="def-chip rep-chip" data-token="नदिन">नदिन (5x)</button>
+                <button class="def-chip rep-chip" data-token="तर">तर (5x)</button>
+                <button class="def-chip rep-chip" data-token="प्रस्ट">प्रस्ट (4x)</button>
+                <button class="def-chip rep-chip" data-token="खान">खान (3x)</button>
+                <button class="def-chip rep-chip" data-token="साँझपख">साँझपख (3x)</button>
+                <button class="def-chip rep-chip" data-token="पटेर">पटेर (3x)</button>
+                <button class="def-chip rep-chip" data-token="जोगिन">जोगिन (2x)</button>
+                <button class="def-chip rep-chip" data-token="हिसाबकिताबमा">हिसाबकिताबमा (2x)</button>
+                <button class="def-chip rep-chip" data-token="तुहिन">तुहिन (2x)</button>
+                <button class="def-chip rep-chip" data-token="खेर">खेर (2x)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cards Scroll List -->
+          <div class="defect-items-scroll" id="defectItemsList">
+            <div class="loading-state">Loading defect dataset...</div>
+          </div>
+        </aside>
+
+        <!-- RIGHT COLUMN: Side-by-Side Detailed Inspector -->
+        <main class="defect-main-inspector" id="defectMainInspector">
+          <!-- Dynamically populated via JS -->
+          <div class="defect-inspector-empty" id="defectInspectorEmpty">
+            <p>Select a defect from the left pane to begin side-by-side analysis.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
   <audio id="globalAudioPlayer" preload="none"></audio>
+  <audio id="refAudioPlayer" preload="none"></audio>
+  <audio id="studioAudioPlayer" preload="none"></audio>
 
   <!-- Notification Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Client Application Script -->
-  <script src="/static/js/app.js?v=9.0"></script>
+  <script src="/static/js/app.js?v=15.0"></script>
 </body>
 </html>
